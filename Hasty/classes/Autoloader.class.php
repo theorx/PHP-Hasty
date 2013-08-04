@@ -3,19 +3,13 @@
 class Autoloader {
 
     /**
-     * @package Engine
-     * @version 1.0
-     * @var array 
-     */
-    private $paths = array();
-
-    /**
+     * @author Lauri Orgla
      * @package Engine
      * @version 1.0
      * @param type $loader_configuration
      */
-    public function __construct($loader_configuration) {
-        //implement loader configuration
+    public function __construct() {
+        spl_autoload_register(array($this, 'load'));
     }
 
     /**
@@ -24,18 +18,17 @@ class Autoloader {
      * @version 1.0
      * @param String $class
      */
-    public function engine($class) {
-        //spl autoload hasty/classes folder
-    }
+    public function load($class) {
 
-    /**
-     * @author Lauri Orgla
-     * @package Engine
-     * @version 1.0
-     * @param String $class
-     */
-    private function controllers($class) {
-        //spl autoload hasty/classes folder
+        $paths = array(Config::get('engine_path') . $class . '.class.php');
+
+        foreach ($paths as $path) {
+            if (file_exists($path) && !class_exists($class)) {
+                include($path);
+                return;
+            }
+        }
+        Log::add("Autoloader cannot load class: " . $class);
     }
 
 }
