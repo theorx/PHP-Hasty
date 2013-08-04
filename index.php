@@ -6,7 +6,9 @@
     </head>
     <body>
         <?php
-        // put your code here 
+        
+        include("Hasty/Hasty.php");
+        
         ?>
     </body>
 </html>
