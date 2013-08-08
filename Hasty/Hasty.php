@@ -10,6 +10,6 @@ Config::setConfiguration(include(__DIR__ . DS . '..' . DS . 'configuration.php')
 require_once(Config::get("engine_path") . "HastyEngine.class.php");
 
 $hasty = new HastyEngine();
-$hasty->HTTPResponse();
-$hasty->RequestA();
+
+$hasty->Run();
 ?>

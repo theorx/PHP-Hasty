@@ -10,8 +10,7 @@ class HastyEngine {
     }
 
     private function getInstance($class) {
-        if (!in_array($class, $this->_instances)) {
-
+        if (!key_exists($class, $this->_instances)) {
             if (class_exists($class, true)) {
                 $this->_instances[$class] = new $class();
             } else {
@@ -30,9 +29,18 @@ class HastyEngine {
         return $this->getInstance(__FUNCTION__);
     }
 
-    public function RequestA() {
-
+    public function Processor() {
         return $this->getInstance(__FUNCTION__);
+    }
+
+    public function Response() {
+        return $this->getInstance(__FUNCTION__);
+    }
+
+    public function Run() {
+        $this->Request()->parse();
+        $this->Processor()->process($this->Request());
+        $this->Response()->respond($this->Processor()->result);
     }
 
 }
