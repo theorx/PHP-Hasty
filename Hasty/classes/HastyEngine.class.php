@@ -41,15 +41,6 @@ class HastyEngine {
      * @version 1.0
      * @return type
      */
-    public function HTTPResponse() {
-        return $this->getInstance(__FUNCTION__);
-    }
-
-    /**
-     * @author Lauri Orgla
-     * @version 1.0
-     * @return type
-     */
     public function Request() {
         return $this->getInstance(__FUNCTION__);
     }
@@ -88,7 +79,6 @@ class HastyEngine {
      * @version 1.0
      */
     public function Run() {
-        Log::Time("system");
         $request = $this->Request()->parse();
         $this->Response()->setRequest($request);
         Authentication::authenticate(Request::data('api-token'));
@@ -100,6 +90,8 @@ class HastyEngine {
             $this->Response()->respond($this->Processor()->result);
         } else {
             $this->Response()->respond(array("msg" => "forbidden"));
+            /// has to be removed
+            //fallback to default response template
         }
     }
 

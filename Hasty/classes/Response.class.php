@@ -71,7 +71,6 @@ class Response {
         } else {
             print json_encode(Config::get('conversion_failure_message')); // fallback default to json.
         }
-        Log::Time("system");
         exit();
     }
 
@@ -166,7 +165,6 @@ class Response {
     public function setHeader($header) {
         if ($header != false) {
             header(sprintf('content-type: %s', $header));
-
             return true;
         }
         return false;
