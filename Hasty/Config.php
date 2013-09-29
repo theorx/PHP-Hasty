@@ -26,9 +26,7 @@ class Config {
         if (isset(self::$configuration[$key])) {
             return self::$configuration[$key];
         }
-        
-        //log
-        echo '<h1>Config::get(' . $key . ') is not defined</h1>';
+        Log::Add(sprintf("Trying to read missing key: %s from configuration", $key), Log::WARNING);
     }
 
 }
