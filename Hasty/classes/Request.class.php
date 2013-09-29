@@ -27,7 +27,7 @@ class Request {
     public $extension = null;
 
     /**
-     *
+     * holds all get and post data 
      * @var type 
      */
     private static $query_params = array();
@@ -41,11 +41,8 @@ class Request {
         $parts = (isset($_GET['api-path']) == true) ? explode("/", $_GET['api-path']) : false;
         if (is_array($parts)) {
             foreach ($parts as $part) {
-
                 if (strpos($part, ".") > 0) {
-
                     $pieces = explode(".", $part);
-
                     if (count($pieces) == 2) {
                         $this->extension = $pieces[1];
                         $_GET['api-path'] = str_replace("." . $this->extension, "", $_GET['api-path']);
@@ -63,10 +60,9 @@ class Request {
      * @version 1.0
      */
     private function parseRoute() {
-
         $parts = (isset($_GET['api-path']) == true) ? explode("/", $_GET['api-path']) : false;
-
         $routes = array();
+
         for ($i = 3; $i < count($parts) + 2; $i += 2) {
             $route = new Route();
             if ($i == 3) { // only first Route has to have class
@@ -134,9 +130,27 @@ class Request {
             return $_POST;
         } else if (isset($_POST[$offset])) {
             return $_POST[$offset];
+        } else if (isset($_GET[$offset])) {
+            return $_GET[$offset];
         } else {
             return false;
         }
+    }
+
+    /**
+     * @version 1.0
+     * @author Lauri Orgla
+     * @param type $fields
+     * @return type
+     */
+    public static function checkInput($fields = array()) {
+        $missing_fields = array();
+        foreach ($fields as $key => $field) {
+            if (!self::data($field)) {
+                $missing_fields[] = $field;
+            }
+        }
+        return (count($missing_fields) > 0) ? $missing_fields : true;
     }
 
 }

@@ -36,23 +36,39 @@ class Processor {
      * @param int $index
      * @return mixed/object
      */
-    public function cycleRoutes($result = array("invalid query"), $index = 0) {
+    public function cycleRoutes($result = array('invalid query'), $index = 0) {
 
         if ($index == 0) {
-            if (isset($this->route[$index], $this->route[$index]->class) && strlen($this->route[$index]->class) > 0 && class_exists($this->route[$index]->class . "Controller", true) == true) {
-                $class_name = $this->route[$index]->class . "Controller";
+            if (isset($this->route[$index], $this->route[$index]->class) && strlen($this->route[$index]->class) > 0 && class_exists($this->route[$index]->class . 'Controller', true) == true) {
+
+                $function = $this->route[$index]->function;
+                if (!Client::hasAccess($this->route[$index]->class, ((strlen($function) == 0) ? "class" : $function), Request::data('api-method'))) {
+                    return array('message' => 'Access is forbidden', 'location' => $this->route, Client::$id);
+                } else {
+                    $function .= "_" . ((strlen(Request::data('api-method')) == 0) ? "read" : Request::data('api-method'));
+                }
+
+
+                $class_name = $this->route[$index]->class . 'Controller';
                 $class = new $class_name();
                 $result = $class;
-                if (method_exists($class, $this->route[$index]->function) == true) {
-                    $result = (strlen($this->route[$index]->param) > 0) ? $class->{$this->route[$index]->function}($this->route[$index]->param) : $class->{$this->route[$index]->function}();
+                if (method_exists($class, $function) == true) {
+                    $result = (strlen($this->route[$index]->param) > 0) ? $class->{$function}($this->route[$index]->param) : $class->{$function}();
                     if (is_object($result) && is_array($result) != true && isset($this->route[$index + 1])) {
                         $result = $this->cycleRoutes($result, $index + 1);
                     }
                 }
             }
         } else {
-            if (method_exists($result, $this->route[$index]->function) == true) {
-                $result = (strlen($this->route[$index]->param) > 0) ? $result->{$this->route[$index]->function}($this->route[$index]->param) : $result->{$this->route[$index]->function}();
+            $function = $this->route[$index]->function;
+            if (!Client::hasAccess(get_class($result), ((strlen($function) == 0) ? "class" : $function), Request::data('api-method'))) {
+                return array('message' => 'Access is forbidden');
+            } else {
+                $function .= "_" . ((strlen(Request::data('api-method')) == 0) ? "read" : Request::data('api-method'));
+            }
+
+            if (method_exists($result, $function) == true) {
+                $result = (strlen($this->route[$index]->param) > 0) ? $result->{$function}($this->route[$index]->param) : $result->{$function}();
                 if (is_object($result) && is_array($result) != true && isset($this->route[$index + 1])) {
                     $result = $this->cycleRoutes($result, $index + 1);
                 }

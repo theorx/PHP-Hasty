@@ -4,7 +4,6 @@ class Autoloader {
 
     /**
      * @author Lauri Orgla
-     * @package Engine
      * @version 1.0
      * @param type $loader_configuration
      */
@@ -14,7 +13,6 @@ class Autoloader {
 
     /**
      * @author Lauri Orgla
-     * @package Engine
      * @version 1.0
      * @param String $class
      */
@@ -38,13 +36,11 @@ class Autoloader {
      * Version defines api version
      * this function must be called with version from incoming request.
      * @author Lauri Orgla
-     * @package Engine
      * @version 1.0
      * @param string $version
      * @return type
      */
     public function appLoader($version) {
-
         spl_autoload_register(function($class) use($version) {
                     $paths = array(
                         Config::get('app_path') . $version . DS . $class . 'Controller.php',

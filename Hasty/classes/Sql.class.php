@@ -46,10 +46,56 @@ class Sql {
      * @param mixed $fields
      * @return type
      */
-    public static function fetch($sql, $fields) {
+    public static function fetch($sql, $fields = array()) {
         $stmt = self::getDB()->prepare($sql);
         $stmt->execute($fields);
         return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    /**
+     * smartFetch will use query parameters to limit result or do any other action
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param string $sql
+     * @param mixed $fields
+     * @return type
+     */
+    public static function smartFetch($sql, $fields = array()) {
+        //Limit and start
+        //if only limit used then it limits output
+        //if start is used too, then it defines number of rows to skip
+        $query_limit = '';
+        if (Request::query('limit')) {
+            if (Request::query('start')) {
+                $query_limit = sprintf(' LIMIT %d, %d', Request::query('start'), Request::query('limit'));
+            } else {
+                $query_limit = sprintf(' LIMIT %d', Request::query('limit'));
+            }
+        }
+        return self::fetch($sql . $query_limit, $fields);
+    }
+
+    /**
+     * smartFetch will use query parameters to limit result or do any other action
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param string $sql
+     * @param mixed $fields
+     * @return type
+     */
+    public static function smartFetchAll($sql, $fields = array()) {
+        //Limit and start
+        //if only limit used then it limits output
+        //if start is used too, then it defines number of rows to skip
+        $query_limit = '';
+        if (Request::query('limit')) {
+            if (Request::query('start')) {
+                $query_limit = sprintf(' LIMIT %d, %d', Request::query('start'), Request::query('limit'));
+            } else {
+                $query_limit = sprintf(' LIMIT %d', Request::query('limit'));
+            }
+        }
+        return self::fetchAll($sql . $query_limit, $fields);
     }
 
     /**
@@ -104,7 +150,12 @@ class Sql {
         self::fetch($sql, $fields);
         return true;
     }
-
+    
+    /**
+     * todo::
+     * insertObject
+     * updateObject
+     */
 }
 
 ?>

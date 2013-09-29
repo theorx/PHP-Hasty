@@ -5,12 +5,15 @@ class User {
     public $id, $name, $auth_key, $auth_secret;
 
     public function __construct($id = 0) {
+        $d = A;
         if ($id != 0) {
             $user_data = Sql::fetch('SELECT * FROM users WHERE id = :id', array(':id' => $id));
             if (isset($user_data->id)) {
                 foreach ($user_data as $key => $val) {
                     $this->{$key} = $val;
                 }
+            } else {
+                Response::Trap(array("message" => "user not found"));
             }
         }
     }
@@ -27,7 +30,7 @@ class User {
         
     }
 
-    public function create() {
+    public function user_create() {
         Sql::query('INSERT INTO users (name, auth_key, auth_secret) VALUES(:name, :auth_key, :auth_secret)', array(
             ':name' => $this->name,
             ':auth_key' => $this->auth_key,
@@ -35,9 +38,13 @@ class User {
         ));
         $this->id = Sql::getLastInsertId();
     }
-    
-    public function delete(){
+
+    public function delete() {
         
+    }
+
+    public function message_read() {
+        return new message("test", "right now noob!", "this is message body... yo!");
     }
 
 }

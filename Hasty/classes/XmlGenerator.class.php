@@ -44,18 +44,23 @@ class XmlGenerator {
      * @param type $xml
      */
     private function buildXml($object, $xml) {
-        if (is_array($object) || is_object($object)) {
-            foreach ($object as $name => $value) {
-                if (is_string($value) || is_numeric($value)) {
-                    $xml->$name = $value;
+        foreach ($object as $key => $value) {
+            if (is_object($value) || is_array($value)) {
+                if (!is_numeric($key)) {
+                    $subnode = $xml->addChild("$key");
+                    $this->buildXml($value, $subnode);
                 } else {
-                    $xml->$name = null;
-                    $this->buildXml($value, $xml->$name);
+                    $subnode = $xml->addChild("item");
+                    $this->buildXml($value, $subnode);
+                }
+            } else {
+                if (!is_numeric($key)) {
+                    $xml->addChild("$key", $value);
+                } else {
+                    $xml->addChild("item", $value);
                 }
             }
         }
-
-        //issue with numeric nodes
     }
 
 }

@@ -16,7 +16,7 @@ class Authentication {
         ));
 
         if (isset($user_data->auth_secret) && strlen($user_data->auth_secret) > 0 && $user_data->auth_secret == $auth_secret) {
-            $new_token = md5(md5(rand(0, rand(0, 128000)))) . md5(time());
+            $new_token = md5(md5(rand(0, rand(0, 128000)))) . md5(time() + rand(128000, rand(0, 256000)));
             Sql::query('INSERT INTO auth_tokens (owner, token, created, expires, ip) VALUES(:owner, :token, :created, :expires, :ip)', array(
                 ':owner' => $user_data->id,
                 ':token' => $new_token,
@@ -52,13 +52,14 @@ class Authentication {
     }
 
     /**
-     * 
+     * @author Lauri Orgla
+     * @version 1.0
      * @param type $token
      */
     public static function authenticate($token) {
         $result = Sql::fetch('SELECT * FROM auth_tokens WHERE token = :token', array(':token' => $token));
         if (isset($result->id) && $result->id > 0 && $result->expires > time()) {
-            ApiUser::setId($result->id);
+            Client::$id = $result->owner;
             return true;
         }
         return false;
