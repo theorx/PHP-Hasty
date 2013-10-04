@@ -29,6 +29,19 @@ class Cache {
     }
 
     /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * deletes cache file
+     * @param string $file
+     * @return boolean
+     */
+    private static function delete($file) {
+        $file = Config::get('cache_path') . $file;
+        unlink($file);
+        return true;
+    }
+
+    /**
      * Retrieves value from cache if cache expired then false
      * @author Lauri Orgla
      * @param string $offset
@@ -36,7 +49,7 @@ class Cache {
      */
     public static function getValue($offset) {
         $name = md5($offset . '_value') . md5($offset . strrev($offset));
-        if (self::read($name . '_ttl') < time()) {
+        if (self::read($name . '_value_ttl') < time()) {
             return false;
         }
         $value = self::read($name);
@@ -51,7 +64,7 @@ class Cache {
      */
     public static function getObject($offset) {
         $name = md5($offset . '_object') . md5($offset . strrev($offset));
-        if (self::read($name . '_ttl') < time()) {
+        if (self::read($name . '_object_ttl') < time()) {
             return false;
         }
         $value = self::read($name);
@@ -70,7 +83,7 @@ class Cache {
     public static function storeValue($offset, $value, $ttl) {
         $name = md5($offset . '_value') . md5($offset . strrev($offset));
         self::write($name, $value);
-        self::write($name . '_ttl', (time() + $ttl));
+        self::write($name . '_value_ttl', (time() + $ttl));
         return true;
     }
 
@@ -86,7 +99,35 @@ class Cache {
     public static function storeObject($offset, $object, $ttl) {
         $name = md5($offset . '_object') . md5($offset . strrev($offset));
         self::write($name, serialize($object));
-        self::write($name . '_ttl', (time() + $ttl));
+        self::write($name . '_object_ttl', (time() + $ttl));
+        return true;
+    }
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param type $offset
+     * @return boolean
+     */
+    public static function deleteValue($offset) {
+        $file = md5($offset . '_value') . md5($offset . strrev($offset));
+        $ttl = md5($offset . '_value_ttl') . md5($offset . strrev($offset));
+        self::delete($file);
+        self::delete($ttl);
+        return true;
+    }
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param type $offset
+     * @return boolean
+     */
+    public static function deleteObject($offset) {
+        $file = md5($offset . '_object') . md5($offset . strrev($offset));
+        $ttl = md5($offset . '_object_ttl') . md5($offset . strrev($offset));
+        self::delete($file);
+        self::delete($ttl);
         return true;
     }
 
