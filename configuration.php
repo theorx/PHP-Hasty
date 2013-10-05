@@ -13,7 +13,6 @@ return array(
     'app_path' => __DIR__ . DS . 'app' . DS,
     'default_response_format' => 'json',
     'xml_response_root_node' => 'Hasty-API',
-    'response_allow_print_method' => true,
     'request_get_replaces' => array("'" => '', '"' => ''),
     'request_allowed_parameters_and_types' => array('limit' => 'int', 'start' => 'int', 'type' => 'string'),
     'token_timestamp_formating' => '%Y-%m-%d %H:%M:%S',
@@ -23,6 +22,5 @@ return array(
     'error_exception_output' => true,
     'save_error_exception_data' => true,
     'cache_path' => __DIR__ . DS . 'Hasty' . DS . 'cache' . DS,
-    'log_timers' => true
 );
 ?>

@@ -30,27 +30,10 @@ class accountsController {
     }
 
     public function user_read($id = 0) {
-
         if ($id == 0) {
-            if (Request::data('api-method') == "create") {
-                if (Request::data('name') && Request::data('auth_key') && Request::data('auth_secret')) {
-                    $user = new User();
-                    $user->name = Request::data('name');
-                    $user->auth_key = Request::data('auth_key');
-                    $user->auth_secret = Request::data('auth_secret');
-                    $user->create();
-                }
-            } else {
-
-                $users_data = Sql::smartFetchAll('SELECT * FROM users ');
-                
-                return array("records" => $users_data, "record_count" => Sql::fetch('SELECT COUNT(*) as count FROM users')->count);
-            }
-
-            return array();
+            return array("records" => Sql::smartFetchAll('SELECT * FROM users '), "record_count" => Sql::fetch('SELECT COUNT(*) as count FROM users')->count);
         } else {
-           
-            return new user($id);
+            return new User($id);
         }
     }
 

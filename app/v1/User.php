@@ -5,7 +5,7 @@ class User {
     public $id, $name, $auth_key, $auth_secret;
 
     public function __construct($id = 0) {
-        $d = A;
+       
         if ($id != 0) {
             $user_data = Sql::fetch('SELECT * FROM users WHERE id = :id', array(':id' => $id));
             if (isset($user_data->id)) {
@@ -13,7 +13,8 @@ class User {
                     $this->{$key} = $val;
                 }
             } else {
-                Response::Trap(array("message" => "user not found"));
+                Response::error("User not found", 101);
+               
             }
         }
     }
@@ -45,6 +46,14 @@ class User {
 
     public function message_read() {
         return new message("test", "right now noob!", "this is message body... yo!");
+    }
+    
+    public function sub_read(){
+        return new User();
+    }
+    
+    public function test_read(){
+        return 1;
     }
 
 }
