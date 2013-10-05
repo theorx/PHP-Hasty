@@ -52,6 +52,7 @@ class Request {
             }
         }
         $this->parseRoute();
+        return $this;
     }
 
     /**

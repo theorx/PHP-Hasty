@@ -2,6 +2,10 @@
 
 class Response {
 
+    const OK = 600;
+    const ERROR = 700;
+    const FORBIDDEN = 900;
+
     /**
      * @author Lauri Orgla
      * @version 1.0
@@ -34,10 +38,49 @@ class Response {
         'json' => array('function' => 'toJson', 'header' => /* 'text/json' */ false),
         'xml' => array('function' => 'toXml', 'header' => 'text/xml'),
         'phpserialize' => array('function' => 'toSerialized', 'header' => false),
-        'print' => array('function' => 'toPrint', 'header' => 'text/html'),
         'json64' => array('function' => 'toJson64', 'header' => false),
-        'xml64' => array('function' => 'toXml64', 'header' => false)
+        'xml64' => array('function' => 'toXml64', 'header' => false),
+        'html' => array('function' => 'toHtml', 'header' => 'text/html')
     );
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @var integer 
+     */
+    private static $response_code = 100;
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @var string 
+     */
+    private static $response_status = self::OK;
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param type $message
+     * @return boolean
+     */
+    public static function error($message) {
+        self::$response_code = self::ERROR;
+        self::$response_status = "ERROR";
+        self::Trap($message);
+        return true;
+    }
+
+    /**
+     * @author Lauri Orgla
+     * @version 1.0
+     * @return boolean
+     */
+    public static function forbidden() {
+        self::$response_code = self::FORBIDDEN;
+        self::$response_status = 'FORBIDDEN';
+        self::Trap('Forbidden access');
+        return true;
+    }
 
     /**
      * @author Lauri Orgla
@@ -58,6 +101,14 @@ class Response {
         if (self::$trap) {
             $input = self::$trap_data;
         }
+
+        $response = new ResponseObject();
+        $response->time = time();
+        $response->data = $input;
+        $response->status = self::$response_status;
+        $response->code = self::$response_code;
+        $input = $response;
+
         if (isset($this->request->extension)) {
             $extension = strtolower($this->request->extension);
         } else {
@@ -129,17 +180,26 @@ class Response {
     }
 
     /**
-     * Return result as print_r for development purposes.
-     * @author Lauri Orgla
-     * @version 1.0
-     * @param mixed $input
+     * 
+     * @param type $input
      * @return type
      */
-    public function toPrint($input) {
-        if (Config::get('response_allow_print_method') == true) {
-            return "<pre>" . print_r($input, true) . "</pre>";
+    public function toHtml($input) {
+        $template = Config::get('engine_path') . DS . '..' . DS . 'templates' . DS . 'htmlOutput.php';
+        $route_parts;
+        foreach ($this->request->route as $node) {
+            (strlen($node->class) > 0 ? $route_parts[] = $node->class : false);
+            (strlen($node->function) > 0 ? $route_parts[] = $node->function : false);
+            (strlen($node->param) > 0 ? $route_parts[] = $node->param : false);
         }
-        return json_encode("print method disabled");
+        $route = implode("/", $route_parts);
+        if (file_exists($template)) {
+            ob_start();
+            include($template);
+            $input = ob_get_contents();
+            ob_end_clean();
+        }
+        return $input;
     }
 
     /**
