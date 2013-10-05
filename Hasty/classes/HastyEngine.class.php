@@ -38,7 +38,7 @@ class HastyEngine {
      * @author Lauri Orgla
      * @version 1.0
      */
-    public function Run() {
+    public function run() {
         $request = $this->get('Request')->parse();
         $this->get('Response')->setRequest($request);
 
