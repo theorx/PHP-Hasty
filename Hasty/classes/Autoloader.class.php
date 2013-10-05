@@ -24,12 +24,11 @@ class Autoloader {
         );
 
         foreach ($paths as $path) {
-            if (file_exists($path) && !class_exists($class)) {
+            if (file_exists($path) && !class_exists($class, false)) {
                 include($path);
                 return;
             }
         }
-        //log system loading problems
     }
 
     /**
