@@ -36,5 +36,5 @@ $hasty = new HastyEngine();
 /**
  * run
  */
-$hasty->Run();
+$hasty->run();
 ?>
