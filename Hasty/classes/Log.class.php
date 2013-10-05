@@ -50,20 +50,20 @@ class Log {
      * @return boolean
      */
     public static function Time($identifier) {
-        if (Config::get('log_timers')) {
-            if (in_array($identifier, array_keys(self::$_timers))) {
-                $lapse = (microtime(true) - self::$_timers[$identifier]);
-                $trace = debug_backtrace();
-                if (isset($trace[0])) {
-                    $file = $trace[0]['file'];
-                    $line = $trace[0]['line'];
-                }
-                Log::Add(sprintf("Timer %s lapse %s", $identifier, $lapse), Log::TIMER, $file, $line);
-                unset(self::$_timers[$identifier]);
-            } else {
-                self::$_timers[$identifier] = microtime(true);
+
+        if (in_array($identifier, array_keys(self::$_timers))) {
+            $lapse = (microtime(true) - self::$_timers[$identifier]);
+            $trace = debug_backtrace();
+            if (isset($trace[0])) {
+                $file = $trace[0]['file'];
+                $line = $trace[0]['line'];
             }
+            Log::Add(sprintf("Timer %s lapse %s", $identifier, $lapse), Log::TIMER, $file, $line);
+            unset(self::$_timers[$identifier]);
+        } else {
+            self::$_timers[$identifier] = microtime(true);
         }
+
         return true;
     }
 
