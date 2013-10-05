@@ -32,6 +32,25 @@ class Authentication {
     }
 
     /**
+     * authenticateCredentials
+     * @author Lauri Orgla
+     * @version 1.0
+     * @param type $token
+     * @return type
+     */
+    public static function authenticateCredentials($auth_key, $auth_secret) {
+        $user_data = Sql::fetch('SELECT * FROM users WHERE auth_key = :auth_key', array(
+                    ':auth_key' => $auth_key
+        ));
+
+        if (isset($user_data->auth_secret) && strlen($user_data->auth_secret) > 0 && $user_data->auth_secret == $auth_secret) {
+            Client::$id = $user_data->id;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * validateToken validates given token against database.
      * @author Lauri Orgla
      * @version 1.0
