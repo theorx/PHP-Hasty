@@ -43,11 +43,12 @@ class Processor {
 
                 $function = $this->route[$index]->function;
                 if (!Client::hasAccess($this->route[$index]->class, ((strlen($function) == 0) ? "class" : $function), Request::data('api-method'))) {
-                    return array('message' => 'Access is forbidden', 'location' => $this->route, Client::$id);
+                    Response::forbidden();
+                    Response::Trap(array('location' => $this->route));
+                    return;
                 } else {
                     $function .= "_" . ((strlen(Request::data('api-method')) == 0) ? "read" : Request::data('api-method'));
                 }
-
 
                 $class_name = $this->route[$index]->class . 'Controller';
                 $class = new $class_name();
@@ -62,7 +63,9 @@ class Processor {
         } else {
             $function = $this->route[$index]->function;
             if (!Client::hasAccess(get_class($result), ((strlen($function) == 0) ? "class" : $function), Request::data('api-method'))) {
-                return array('message' => 'Access is forbidden');
+                Response::forbidden();
+                Response::Trap(array('location' => $this->route));
+                return;
             } else {
                 $function .= "_" . ((strlen(Request::data('api-method')) == 0) ? "read" : Request::data('api-method'));
             }
