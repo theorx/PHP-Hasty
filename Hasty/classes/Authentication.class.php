@@ -11,7 +11,7 @@ class Authentication {
      * @return type
      */
     public static function generateToken($auth_key, $auth_secret) {
-        $user_data = Sql::fetch('SELECT * FROM users WHERE auth_key = :auth_key', array(
+        $user_data = Sql::fetch('SELECT u.id, u.name, u.auth_key, u.auth_secret, u.user_group FROM users AS u WHERE u.auth_key = :auth_key', array(
                     ':auth_key' => $auth_key
         ));
 
@@ -39,7 +39,7 @@ class Authentication {
      * @return type
      */
     public static function authenticateCredentials($auth_key, $auth_secret) {
-        $user_data = Sql::fetch('SELECT * FROM users WHERE auth_key = :auth_key', array(
+        $user_data = Sql::fetch('SELECT  u.id, u.name, u.auth_key, u.auth_secret, u.user_group FROM users AS u WHERE u.auth_key = :auth_key', array(
                     ':auth_key' => $auth_key
         ));
 
@@ -60,7 +60,7 @@ class Authentication {
     public static function validateToken($token) {
         $return_data = array("status" => false);
 
-        $result = Sql::fetch('SELECT * FROM auth_tokens WHERE token = :token', array(':token' => $token));
+        $result = Sql::fetch('SELECT at.id, at.owner, at.token, at.created, at.expires, at.ip FROM auth_tokens AS at WHERE at.token = :token', array(':token' => $token));
         if (isset($result->id) && $result->id > 0 && $result->expires > time()) {
             $return_data['created'] = strftime(Config::get('token_timestamp_formating'), $result->created);
             $return_data['expires'] = strftime(Config::get('token_timestamp_formating'), $result->expires);
@@ -76,7 +76,7 @@ class Authentication {
      * @param type $token
      */
     public static function authenticate($token) {
-        $result = Sql::fetch('SELECT * FROM auth_tokens WHERE token = :token', array(':token' => $token));
+        $result = Sql::fetch('SELECT at.id, at.owner, at.token, at.created, at.expires, at.ip  FROM auth_tokens AS at WHERE token = :token', array(':token' => $token));
         if (isset($result->id) && $result->id > 0 && $result->expires > time()) {
             Client::$id = $result->owner;
             return true;

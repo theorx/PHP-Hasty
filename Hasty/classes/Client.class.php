@@ -65,21 +65,21 @@ class Client {
      */
     private static function compilePermissions() {
         if (!self::$_user_data) {
-            self::$_user_data = Sql::fetch('SELECT * FROM users WHERE id = :user_id', array(':user_id' => self::$id));
+            self::$_user_data = Sql::fetch('SELECT u.id, u.name, u.auth_key, u.auth_secret, u.user_group FROM users AS u WHERE u.id = :user_id', array(':user_id' => self::$id));
         }
 
         if (!self::$_permission_groups) {
-            self::$_permission_groups = Sql::fetchAll('SELECT * FROM permission_groups');
+            self::$_permission_groups = Sql::fetchAll('SELECT pg.id, pg.name, pg.parent, pg.active FROM permission_groups AS pg WHERE pg.active = 1');
         }
 
         if (!self::$_group_permission_data && isset(self::$_user_data->user_group)) {
             self::cycleGroupsRecursive(self::$_permission_groups, self::$_user_data->user_group);
-            self::$_group_permission_data = Sql::fetchAll('SELECT * FROM group_permissions WHERE group_id IN(' . implode(',', self::$_parsed_groups) . ')');
+            self::$_group_permission_data = Sql::fetchAll('SELECT gp.id, gp.group_id, gp.type, gp.data, gp.create, gp.read, gp.update, gp.delete FROM group_permissions AS gp WHERE gp.group_id IN(' . implode(',', self::$_parsed_groups) . ')');
             self::parseGroupsPermissions(self::$_group_permission_data);
         }
 
         if (!self::$_user_permission_data && isset(self::$_user_data->id)) {
-            self::$_user_permission_data = Sql::fetchAll('SELECT * FROM user_permissions WHERE user_id = :user_id', array(':user_id' => self::$_user_data->id));
+            self::$_user_permission_data = Sql::fetchAll('SELECT up.id, up.user_id, up.type, up.data, up.create, up.read, up.update, up.delete FROM user_permissions AS up WHERE up.user_id = :user_id', array(':user_id' => self::$_user_data->id));
             self::parseUserPermissions(self::$_user_permission_data);
         }
     }
