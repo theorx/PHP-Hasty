@@ -89,6 +89,13 @@ class Request {
      * @return boolean|string
      */
     public static function query($offset) {
+        /**
+         * implement regex
+         * 
+         * this has to be refactored.
+         * get rid of request_allowed_parameters_and_types
+         * replace with static types to validate against and optional regex
+         */
         if (key_exists($offset, Config::get('request_allowed_parameters_and_types')) && isset($_GET[$offset])) {
             if (key_exists($offset, self::$query_params)) {
                 return self::$query_params[$offset];
@@ -127,12 +134,11 @@ class Request {
      * @return mixed|string
      */
     public static function data($offset = null) {
-        if ($offset == null && isset($_POST)) {
-            return $_POST;
-        } else if (isset($_POST[$offset])) {
-            return $_POST[$offset];
-        } else if (isset($_GET[$offset])) {
-            return $_GET[$offset];
+        $request = array_merge($_POST, $_GET);
+        if ($offset == null && isset($request)) {
+            return $request;
+        } else if (isset($request[$offset])) {
+            return $request[$offset];
         } else {
             return false;
         }

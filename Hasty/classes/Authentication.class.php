@@ -27,7 +27,6 @@ class Authentication {
 
             return array("api-token" => $new_token);
         }
-
         return array('message' => 'invalid authentication data');
     }
 

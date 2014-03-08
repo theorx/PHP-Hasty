@@ -5,21 +5,29 @@ class User {
     public $id, $name, $auth_key, $auth_secret;
 
     public function __construct($id = 0) {
-       
+
         if ($id != 0) {
             $user_data = Sql::fetch('SELECT * FROM users WHERE id = :id', array(':id' => $id));
             if (isset($user_data->id)) {
                 foreach ($user_data as $key => $val) {
                     $this->{$key} = $val;
                 }
-            } else {
-                Response::error("User not found", 101);
-               
             }
         }
     }
 
-    public function posts($id = 0) {
+    public function create() {
+        Sql::query('INSERT INTO users (name, auth_key, auth_secret, user_group) VALUES(:name, :auth_key, :auth_secret, :user_group)', array(
+            ':name' => $this->name,
+            ':auth_key' => $this->auth_key,
+            ':auth_secret' => $this->auth_secret,
+            ':user_group' => 5
+        ));
+
+        return Sql::getLastInsertId();
+    }
+
+    public function posts_read($id = 0) {
         if ($id == 0) {
             return array("all_posts" => 1);
         } else {
@@ -27,8 +35,8 @@ class User {
         }
     }
 
-    public function friends($input = 0) {
-        
+    public function friends_read($input = 0) {
+        return "yo";
     }
 
     public function user_create() {
@@ -40,20 +48,8 @@ class User {
         $this->id = Sql::getLastInsertId();
     }
 
-    public function delete() {
-        
-    }
-
     public function message_read() {
         return new message("test", "right now noob!", "this is message body... yo!");
-    }
-    
-    public function sub_read(){
-        return new User();
-    }
-    
-    public function test_read(){
-        return 1;
     }
 
 }

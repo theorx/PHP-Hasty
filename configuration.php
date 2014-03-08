@@ -19,7 +19,7 @@ return array(
     'token_lifetime_seconds' => 1440,
     'public_controllers' => array('auth', 'user', 'accounts', 'userManagement', 'userGroups'),
     'authentication_enabled' => false,
-    'error_exception_output' => true,
+    'error_exception_output' => false,
     'save_error_exception_data' => true,
     'cache_path' => __DIR__ . DS . 'Hasty' . DS . 'cache' . DS,
 );

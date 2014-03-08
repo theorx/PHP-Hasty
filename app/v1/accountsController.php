@@ -38,18 +38,30 @@ class accountsController {
     }
 
     public function user_delete($id = 0) {
-        return "loll!!";
+       
         if ($id != 0) {
             Sql::query("DELETE FROM users WHERE id = :id", array(":id" => $id));
             return array("msg" => "User " . $id . " is successfully deleted");
         } else {
+             return "loll!!";
             Sql::query("DELETE FROM users ");
             return array("msg" => "All users deleted");
         }
     }
 
     public function user_create() {
-        print_r($_POST);
+        $data = Request::data();
+        if(isset($data['name'], $data['api_key'], $data['api_secret'])){
+            $user = new User();
+            $user->name = $data['name'];
+            $user->auth_key = $data['api_key'];
+            $user->auth_secret = $data['api_secret'];
+            $id = $user->create();
+            
+            return new User($id);
+        }
+        return "dafuq";
+        
     }
 
 }

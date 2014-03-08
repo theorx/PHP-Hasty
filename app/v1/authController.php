@@ -6,6 +6,15 @@ class authController {
         //no authentication required to access this
     }
 
+    /**
+     * Description of that fucking shit
+     * you
+     * know
+     * that
+     * right?
+     * @author Lauri Orgla <lauri.orgla@example.com> 
+     * @return type
+     */
     public function request_token_read() {
         return Authentication::generateToken(Request::data('auth_key'), Request::data('auth_secret'));
     }

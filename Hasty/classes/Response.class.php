@@ -40,7 +40,8 @@ class Response {
         'phpserialize' => array('function' => 'toSerialized', 'header' => false),
         'json64' => array('function' => 'toJson64', 'header' => false),
         'xml64' => array('function' => 'toXml64', 'header' => false),
-        'html' => array('function' => 'toHtml', 'header' => 'text/html')
+        'html' => array('function' => 'toHtml', 'header' => 'text/html'),
+        'doc' => array('function' => 'toHtmlDoc', 'header' => 'text/html')
     );
 
     /**
@@ -48,14 +49,14 @@ class Response {
      * @version 1.0
      * @var integer 
      */
-    private static $response_code = 100;
+    private static $response_code = self::OK;
 
     /**
      * @author Lauri Orgla
      * @version 1.0
      * @var string 
      */
-    private static $response_status = self::OK;
+    private static $response_status = "OK";
 
     /**
      * @author Lauri Orgla
@@ -195,6 +196,50 @@ class Response {
         $route = implode("/", $route_parts);
         if (file_exists($template)) {
             ob_start();
+            include($template);
+            $input = ob_get_contents();
+            ob_end_clean();
+        }
+        return $input;
+    }
+
+    /**
+     * 
+     * @param type $input
+     * @return type
+     */
+    public function toHtmlDoc($input) {
+        $template = Config::get('engine_path') . DS . '..' . DS . 'templates' . DS . 'reference.php';
+        $route_parts = null;
+        foreach ($this->request->route as $node) {
+            (strlen($node->class) > 0 ? $route_parts[] = $node->class : false);
+            (strlen($node->function) > 0 ? $route_parts[] = $node->function : false);
+            (strlen($node->param) > 0 ? $route_parts[] = $node->param : false);
+        }
+        //if route [0] class is missing and version exists. then list all the classes in v1 folder
+        
+        
+        //check cache
+        
+        //if cache old or something
+        
+        //check md5 of file's contents to validate cache
+        
+        //must generate complicated shit herew
+        
+        $class = get_class($input->data);
+
+        $route = implode("/", $route_parts);
+        if (file_exists($template)) {
+            ob_start();
+            $doc = null;
+            $file = Config::get('app_path') . $this->request->version . DS . $class . '.php';
+
+            if (file_exists($file)) {
+                $documentor = new Documentor();
+                $doc = $documentor->fetchFunctions(file_get_contents($file));
+            }
+
             include($template);
             $input = ob_get_contents();
             ob_end_clean();

@@ -24,7 +24,7 @@ class Cache {
      */
     private static function write($file, $data) {
         $file = Config::get('cache_path') . $file;
-        file_put_contents($path . $file, $data);
+        file_put_contents($file, $data);
         return true;
     }
 
