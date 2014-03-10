@@ -131,6 +131,36 @@ class Cache {
         return true;
     }
 
+    /**
+     * Checks if value cache is valid. If cache has timed out returns false.
+     * This prevents reading cache when its not required
+     * @author Lauri Orgla
+     * @param string $offset
+     * @return boolean
+     */
+    public static function checkValueCache($offset) {
+        $name = md5($offset . '_value') . md5($offset . strrev($offset));
+        if (self::read($name . '_value_ttl') < time()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if object cache is valid. If cache has timed out returns false.
+     * This prevents reading cache when its not required
+     * @author Lauri Orgla
+     * @param string $offset
+     * @return boolean
+     */
+    public static function checkObjectCache($offset) {
+        $name = md5($offset . '_object') . md5($offset . strrev($offset));
+        if (self::read($name . '_object_ttl') < time()) {
+            return false;
+        }
+        return true;
+    }
+
 }
 
 ?>
