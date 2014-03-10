@@ -46,7 +46,7 @@ class ErrorHandler {
 
         if (Config::get('error_exception_output') == true) {
             print "<div style='text-align: left;'>";
-            print "<h2 style='color: rgb(190, 50, 50);'>Exception Occured:</h2>";
+            print "<h2 style='color: rgb(190, 50, 50);'>Exception Occurred:</h2>";
             print "<table style='width: 800px; display: inline-block;'>";
             print "<tr style='background-color:rgb(230,230,230);'><th style='width: 80px;'>Type</th><td>" . get_class($e) . "</td></tr>";
             print "<tr style='background-color:rgb(240,240,240);'><th>Message</th><td>{$e->getMessage()}</td></tr>";

@@ -9,7 +9,6 @@ return array(
     'mysql_password' => '',
     'mysql_database' => 'hasty',
     'engine_path' => __DIR__ . DS . 'Hasty' . DS . 'classes' . DS,
-    'application_path' => __DIR__ . DS . 'application' . DS,
     'app_path' => __DIR__ . DS . 'app' . DS,
     'default_response_format' => 'json',
     'xml_response_root_node' => 'Hasty-API',
@@ -19,7 +18,7 @@ return array(
     'token_lifetime_seconds' => 1440,
     'public_controllers' => array('auth', 'user', 'accounts', 'userManagement', 'userGroups'),
     'authentication_enabled' => false,
-    'error_exception_output' => false,
+    'error_exception_output' => true,
     'save_error_exception_data' => true,
     'cache_path' => __DIR__ . DS . 'Hasty' . DS . 'cache' . DS,
 );

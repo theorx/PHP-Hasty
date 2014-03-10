@@ -61,6 +61,7 @@ class Authentication {
 
         $result = Sql::fetch('SELECT at.id, at.owner, at.token, at.created, at.expires, at.ip FROM auth_tokens AS at WHERE at.token = :token', array(':token' => $token));
         if (isset($result->id) && $result->id > 0 && $result->expires > time()) {
+            //TODO: build a check to check if formating is valid and produces result. 
             $return_data['created'] = strftime(Config::get('token_timestamp_formating'), $result->created);
             $return_data['expires'] = strftime(Config::get('token_timestamp_formating'), $result->expires);
             $return_data['status'] = true;

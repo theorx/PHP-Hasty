@@ -217,17 +217,32 @@ class Response {
             (strlen($node->param) > 0 ? $route_parts[] = $node->param : false);
         }
         //if route [0] class is missing and version exists. then list all the classes in v1 folder
+
+        $folder = Config::get('app_path') . $this->request->version;
+
+
+
+        Cache::storeValue("response_documentor_checksum", $value, $ttl);
         
-        
+        $docs = array();
+
+        $data = null;
+        $documentor = new Documentor();
+        foreach (scandir($folder) as $file) {
+            if (strlen($file) > 2 && file_exists($folder . DS . $file)) {
+                $docs[explode('.', $file)[0]] = $documentor->fetchFunctions(file_get_contents($folder . DS . $file));
+            }
+        }
+        echo "<pre>";
+
+        print_r($docs);
+
         //check cache
-        
         //if cache old or something
-        
         //check md5 of file's contents to validate cache
-        
         //must generate complicated shit herew
-        
-        $class = get_class($input->data);
+
+        $class = (is_object($input->data)) ? get_class($input->data) : '';
 
         $route = implode("/", $route_parts);
         if (file_exists($template)) {
