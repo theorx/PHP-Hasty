@@ -237,6 +237,8 @@ class Response {
 
         print_r($docs);
 
+        echo "</pre>";
+        
         //check cache
         //if cache old or something
         //check md5 of file's contents to validate cache
